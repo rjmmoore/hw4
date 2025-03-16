@@ -6,11 +6,16 @@ class PlacesController < ApplicationController
 
   def show
     @place = Place.find_by({ "id" => params["id"] })
-
-    if @current_user
-      @entries = Entry.where({ "place_id" => @place["id"], "user_id" => @current_user["id"] }) # Only show current user's entries
+  
+    if @place.nil?
+      flash["notice"] = "Place not found."
+      redirect_to "/places"
     else
-      @entries = [] # Show no entries if logged out
+      if @current_user
+        @entries = Entry.where({ "place_id" => @place["id"], "user_id" => @current_user["id"] })
+      else
+        @entries = []
+      end
     end
   end
 

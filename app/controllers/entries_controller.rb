@@ -24,8 +24,11 @@ class EntriesController < ApplicationController
 
   def edit
     @entry = Entry.find_by({ "id" => params["id"] })
-
-    if @current_user.nil? || @entry["user_id"] != @current_user["id"]
+  
+    if @current_user.nil?
+      flash["notice"] = "You must log in to edit an entry."
+      redirect_to "/login"
+    elsif @entry["user_id"] != @current_user["id"]
       flash["notice"] = "You are not authorized to edit this entry."
       redirect_to "/places"
     end
